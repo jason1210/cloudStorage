@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=0.5, maximum-scale=2.0, user-scalable=yes"/>
+    <script src="jquery/jquery.js"></script>
+    <script>
+        $(document).ready(function () {
+            $.post("listFiles",
+                    function (data) {
+                        if ('' == data) {
+                            alert("对不起，请您先登录你的云盘账户！")
+                            return;
+                        }
+                        var json = JSON.parse(data);
+                        var str = "";
+                        for (var i = 0; i < json.length; i++) {
+                            var obj = JSON.parse(json[i])
+                            str = str + "<label id=" + obj.id + " title=" + obj.fileDownloadUrl + "><input  type='radio' name='movie' value=" + obj.id + " />" + obj.name + "</label><br>";
+                        }
+                        document.getElementById("movies").innerHTML = str;
+                        document.getElementById("movies").style.display = "block";
+                        document.getElementById("bottom").style.display = "block";
+                    });
+        });
+        function play() {
+            var fileId = $("input[name='movie']:checked").val();
+            var fileName = $("label#" + fileId).text();
+            var fileDownloadUrl = document.getElementById(fileId).title;
+            var playUrl = "play?fileName=" + fileName + "&fileDownloadUrl=" + encodeURIComponent(fileDownloadUrl);
+            $.get(playUrl,
+                    function (data) {
+                        if ("success" == data) {
+                            alert("即将播放！")
+                        } else {
+                            alert("播放失败！")
+                        }
+                    });
+        }
+        function doit() {
+            var fileId = $("input[name='movie']:checked").val();
+            $.post("deleteFile?fileId=" + fileId,
+                    function (data) {
+                        if ("success" == data) {
+                            alert("删除成功！")
+                            document.location.reload();
+                        } else {
+                            alert("删除失败！")
+                        }
+                    });
+        }
+    </script>
+</head>
+<body>
+<div style="border: double; display: none" id="movies">
+</div>
+<div id="bottom" style="display: none">
+    <table>
+        <tr>
+            <td id="play">
+                <button type="button" onclick="play()"><h2>投屏</h2></button>
+            </td>
+            <td id="del">
+                <button type="button" onclick="doit()"><h2>删除</h2></button>
+            </td>
+            <td id="index">
+                <button type="button"><h2><a href="index.html">首页</a></h2></button>
+            </td>
+        </tr>
+    </table>
+
+
+</div>
+</body>
+</html>

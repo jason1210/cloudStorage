@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=0.5, maximum-scale=2.0, user-scalable=yes"/>
+    <script src="jquery/jquery.js"></script>
+    <script type="text/javascript">
+        function play() {
+            var fileName = "测试";
+            var fileDownloadUrl = "http://183.131.15.28/msg?deivceId=41009ec8e022f7611606015&weipid=9876011026633604032992941&msg=%7B%22action%22%3A+%22play%22%2C%22data%22%3A+%7B%22assetname%22%3A%22%E5%A4%A9%E5%B1%B1.mp4%22%2C+%22playurl%22%3A%22http%3A%2F%2Fdownload.cloud.189.cn%2Ffile%2FdownloadFile.action%3Fdt%3D51%26expired%3D1502738670432%26sk%3D1a43c32c-ecef-47a7-88a5-6b3c48d69e43_app%26ufi%3D7149821687283421%26token%3Dcloud15%26sig%3D6b%252BzkCNour4sLChSvppQDKs2WAc%253D%22%7D%7D";
+            var playUrl = "play?fileName=" + fileName + "&fileDownloadUrl=" + encodeURIComponent(fileDownloadUrl);
+            $.get(playUrl,
+                    function (data) {
+                        if ("success" == data) {
+                            alert("即将播放！")
+                        } else {
+                            alert(data)
+                        }
+                    });
+        }
+    </script>
+
+</head>
+<body>
+<div style="text-align: center">
+    <table id="movie" width="100%" height="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+            <td>无极</td>
+            <td>
+                <button type="button" onclick="play()">投屏播放</button>
+            </td>
+            <td>
+                <button type="button">收藏</button>
+            </td>
+        </tr>
+        <tr>
+            <td>天龙八部</td>
+            <td>
+                <button type="button" onclick="play()">投屏播放</button>
+            </td>
+            <td>
+                <button type="button">收藏</button>
+            </td>
+        </tr>
+        <tr>
+            <td>笑傲江湖</td>
+            <td>
+                <button type="button" onclick="play()">投屏播放</button>
+            </td>
+            <td>
+                <button type="button">收藏</button>
+            </td>
+        </tr>
+    </table>
+    <div id="myDiv"><h2>授权登录天翼云盘</h2></div>
+    <button id="b01" type="button">我的网盘</button>
+</div>
+
+</body>
+<script>
+
+    $(document).ready(function () {
+        $("#b01").click(function () {
+            $.get("login",
+                    function (data) {
+                        if ("success" == data) {
+                            window.location.href = "myDisk.html";
+                            return;
+                        }
+                        document.getElementById("movie").style.display="none";
+                        document.getElementById("b01").style.display="none";
+                        $("#myDiv").html(data);
+                    });
+        });
+
+    });
+</script>
+</html>
