@@ -1,0 +1,11 @@
+/.settings/
+/.idea/
+/target/
+/.classpath
+/.project
+/*.iml
+/src/test/
+logs/
+/weixin.iml
+/meilanjuzhu.iml
+src/main/resources/rebel.xml
