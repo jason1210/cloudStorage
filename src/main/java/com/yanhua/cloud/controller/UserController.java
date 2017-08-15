@@ -2,8 +2,10 @@ package com.yanhua.cloud.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.yanhua.cloud.model.AccessToken;
+import com.yanhua.cloud.utils.ECloudUtils;
 import com.yanhua.cloud.utils.HttpRequestUtils;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -16,13 +18,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static com.yanhua.cloud.listener.MyListener.context;
 
 /**
  * Created by zhusc on 2017/8/7.
  */
 @Controller
 public class UserController extends BaseController {
+    @Autowired
+    private ECloudUtils eCloudUtils;
 
     /**
      * 天翼云授权接口
@@ -38,9 +41,9 @@ public class UserController extends BaseController {
         //检测是否登录云盘
         String accessToken = getAccessToken(request);
         if (null == accessToken) {
-            String appId = (String) context.getAttribute("appId");
-            String redirectUri = (String) context.getAttribute("redirectUri");
-            String appSecret = (String) context.getAttribute("appSecret");
+            String appId = eCloudUtils.getAppId();
+            String redirectUri = eCloudUtils.getRedirectUri();
+            String appSecret = eCloudUtils.getAppSecret();
             //直接获取令牌
             String url = "https://oauth.api.189.cn/emp/oauth2/v3/authorize?app_id=" + appId + "&app_secret=" + appSecret + "&redirect_uri=" + redirectUri + "&response_type=token";
             logger.info("login登录云盘授权url：----->" + url);
@@ -111,16 +114,12 @@ public class UserController extends BaseController {
     public List<String> listFiles(HttpServletRequest request, HttpServletResponse response) {
         try {
             logger.info("listFiles------------------------>");
-
-            String appId = (String) context.getAttribute("appId");
-//            String appId = "294198760000266035";
-//            String accessToken = "feced99f8b33be4bf668d7574164babc1502187075438";
+            String appId = eCloudUtils.getAppId();
             String accessToken = getAccessToken(request);
             if (accessToken == null) {
                 return null;
             }
             String url = "http://api.189.cn/ChinaTelecom/listFiles.action?app_id=" + appId + "&access_token=" + accessToken + "&mediaAttr=0&mediaType=3&iconOption=0&pageNum=1&pageSize=17&fileType=0&orderBy=filename&descending=false";
-//            String url = "http://api.189.cn/ChinaTelecom/listFiles.action?app_id=294198760000266035&access_token=feced99f8b33be4bf668d7574164babc1502187075438&mediaAttr=0&mediaType=3&iconOption=0&pageNum=1&pageSize=17&fileType=0&orderBy=filename&descending=false";
             logger.info("listFiles获取我的云盘文件列表url：------->" + url);
             String res = HttpRequestUtils.sendGet(url);
             logger.info("listFiles--->" + res);
@@ -159,7 +158,7 @@ public class UserController extends BaseController {
             String fileId = request.getParameter("fileId");
             logger.info("文件ID------------------>" + fileId);
             //通过文件id删除云盘中该文件
-            String appId = (String) context.getAttribute("appId");
+            String appId = eCloudUtils.getAppId();
             String accessToken = getAccessToken(request);
             String getFileInfoUrl = "http://api.189.cn/ChinaTelecom/deleteFile.action?app_id=" + appId + "&access_token=" + accessToken + "&fileId=" + fileId;
             String jsonRes = HttpRequestUtils.sendPost(getFileInfoUrl, null);

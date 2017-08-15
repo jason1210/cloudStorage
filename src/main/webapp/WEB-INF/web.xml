@@ -26,11 +26,6 @@
     <url-pattern>/*</url-pattern>
   </filter-mapping>
 
-  <!-- my监听器 -->
-  <listener>
-    <listener-class>com.yanhua.cloud.listener.MyListener</listener-class>
-  </listener>
-
   <!-- Spring监听器 -->
   <listener>
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>

@@ -1,7 +1,9 @@
 package com.yanhua.cloud.controller;
 
+import com.yanhua.cloud.utils.ECloudUtils;
 import com.yanhua.cloud.utils.HttpRequestUtils;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
