@@ -37,7 +37,7 @@ public class UserController extends BaseController {
         logger.info("login------------------------>");
         //检测是否登录云盘
         String accessToken = getAccessToken(request);
-        if (null != accessToken) {
+        if (null == accessToken) {
             String appId = (String) context.getAttribute("appId");
             String redirectUri = (String) context.getAttribute("redirectUri");
             String appSecret = (String) context.getAttribute("appSecret");
