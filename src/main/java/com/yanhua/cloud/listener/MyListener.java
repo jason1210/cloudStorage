@@ -21,7 +21,7 @@ public class MyListener implements ServletContextListener {
     public void contextInitialized(ServletContextEvent sce) {
         context=sce.getServletContext();
         context.setAttribute("appId", "294198760000266035");
-        context.setAttribute("redirectUri", "http://183.131.15.28:8280/cloud_storage/redirect");
+        context.setAttribute("redirectUri", "http://183.131.15.28:8280/cloudStorage/redirect");
         context.setAttribute("appSecret", "0afa6fed1ffd301bdf0e4ddf61714d0a");
         context.setAttribute("webUrl",sce.getServletContext().getRealPath("/"));
         System.out.println("MyListener contextInitialized--------------");
