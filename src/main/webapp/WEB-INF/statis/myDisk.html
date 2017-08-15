@@ -33,7 +33,7 @@
                         if ("success" == data) {
                             alert("即将播放！")
                         } else {
-                            alert("播放失败！")
+                            alert(data)
                         }
                     });
         }
@@ -52,9 +52,9 @@
     </script>
 </head>
 <body>
-<div style="border: double; display: none" id="movies">
+<div style="border: double; display: none;line-height:42px" id="movies">
 </div>
-<div id="bottom" style="display: none">
+<div id="bottom" style="display: none;margin-top:120px">
     <table>
         <tr>
             <td id="play">

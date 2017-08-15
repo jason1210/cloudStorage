@@ -179,7 +179,7 @@
                     <stopKey>STOP</stopKey>
                     <webApp>
                         <contextPath>/</contextPath>
-                        <webInfIncludeJarPattern>.*/.*uds-[^/]\.jar$</webInfIncludeJarPattern>
+                        <webInfIncludeJarPattern>.*/.*cloudStorage-[^/]\.jar$</webInfIncludeJarPattern>
                     </webApp>
                     <war>${project.build.directory}/${project.build.finalName}.war</war>
                     <connectors>
