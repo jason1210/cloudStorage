@@ -1,5 +1,7 @@
 package com.yanhua.cloud.utils;
 
+import javax.annotation.PostConstruct;
+
 /**
  * Created by zhusc on 2017/8/15.
  * 加载天翼云属性类
@@ -33,6 +35,11 @@ public class ECloudUtils {
 
     public void setRedirectUri(String redirectUri) {
         this.redirectUri = redirectUri;
+    }
+
+    @PostConstruct
+    public void initMethod() throws Exception {
+        System.out.println("redirectUri:----->" + redirectUri);
     }
 
     public static String getFileInfo(String appId, String accessToken, String fileId) {
