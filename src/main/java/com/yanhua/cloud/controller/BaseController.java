@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -25,22 +24,6 @@ public class BaseController {
     @Autowired
     protected ProducerService producerService;
     protected static Logger logger = LoggerFactory.getLogger(BaseController.class);
-
-    /**
-     * 写数据
-     *
-     * @param outStr   {"result":%1$s}
-     * @param outValue 返回页面的code
-     * @param out      输出流
-     */
-
-
-    protected void write(String outStr, String outValue, PrintWriter out) {
-        String result = String.format(outStr, outValue);
-        logger.info("result:" + result);
-        out.write(result);
-        out.close();
-    }
 
     /**
      * 获取所以的云盘提供者用户

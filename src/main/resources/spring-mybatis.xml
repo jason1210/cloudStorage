@@ -19,7 +19,7 @@
     <bean id="parentdataSource" class="com.alibaba.druid.pool.DruidDataSource"
           destroy-method="close">
         <!-- 数据库基本信息配置 -->
-        <property name="driverClassName" value="${driver.class.name}"/>
+        <property name="driverClassName" value="${cmes.driver.class.name}"/>
         <property name="filters" value="${filters}"/>
         <!-- 最大并发连接数 -->
         <property name="maxActive" value="${maxActive}"/>
