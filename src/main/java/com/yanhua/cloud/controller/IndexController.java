@@ -45,7 +45,7 @@ public class IndexController extends BaseController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return "index";
+        return "index-welcome";
     }
 
     @RequestMapping(value = "toIndex")
