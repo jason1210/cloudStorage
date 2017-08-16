@@ -2,7 +2,8 @@ package com.yanhua.cloud.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.yanhua.cloud.model.AccessToken;
-import com.yanhua.cloud.utils.ECloudUtils;
+import com.yanhua.cloud.model.UserCollect;
+import com.yanhua.cloud.service.UserCollectService;
 import com.yanhua.cloud.utils.HttpRequestUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.net.URLEncoder;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -25,7 +25,7 @@ import java.util.Map;
 @Controller
 public class UserController extends BaseController {
     @Autowired
-    private ECloudUtils eCloudUtils;
+    private UserCollectService userCollectService;
 
     /**
      * 天翼云授权接口
@@ -103,41 +103,34 @@ public class UserController extends BaseController {
     }
 
     /**
-     * 获取文件列表
+     * 获取我的云盘文件列表
      *
      * @param request
      * @param response
      * @return
      */
-    @RequestMapping(value = "/listFiles", produces = "application/json;charset=UTF-8")
+    @RequestMapping(value = "/diskFilelist", produces = "application/json;charset=UTF-8")
     @ResponseBody
-    public List<String> listFiles(HttpServletRequest request, HttpServletResponse response) {
+    public List<String> listDiskFiles(HttpServletRequest request, HttpServletResponse response) {
         try {
-            logger.info("listFiles------------------------>");
-            String appId = eCloudUtils.getAppId();
+            logger.info("diskFilelist------------------------>");
             String accessToken = getAccessToken(request);
             if (accessToken == null) {
                 return null;
             }
-            String url = "http://api.189.cn/ChinaTelecom/listFiles.action?app_id=" + appId + "&access_token=" + accessToken + "&mediaAttr=0&mediaType=3&iconOption=0&pageNum=1&pageSize=17&fileType=0&orderBy=filename&descending=false";
-            logger.info("listFiles获取我的云盘文件列表url：------->" + url);
-            String res = HttpRequestUtils.sendGet(url);
-            logger.info("listFiles--->" + res);
-            //解析文件列表,获取文件下载地址
-            Map jsonMap = (Map) JSON.parse(res);
-            Map fileMap = (Map) jsonMap.get("fileList");
-            List<Map<String, Object>> mapList = (List<Map<String, Object>>) fileMap.get("file");
-            List<String> fileDownloadUrls = new ArrayList<String>();
-            for (Map<String, Object> map : mapList) {
-                //通过文件id获取文件下载地址
-                String getFileInfoUrl = "http://api.189.cn/ChinaTelecom/getFileInfo.action?app_id=" + appId + "&access_token=" + accessToken + "&fileId=" + map.get("id");
-                String jspnRes = HttpRequestUtils.sendGet(getFileInfoUrl);
-                fileDownloadUrls.add(jspnRes);
+            //获取该用户云盘上的文件列表
+            List<String> diskFiles = getFileInfoListByAccessToken(accessToken);
+            String collectOpenId = (String) request.getSession().getAttribute("openId");
+            String appId = eCloudUtils.getAppId();
+            //获取该用户收藏的文件列表
+            List<String> collectFiles = userCollectService.getCollectFiles(appId, collectOpenId);
+            if (null != collectFiles && collectFiles.size() > 0) {
+                diskFiles.addAll(collectFiles);
             }
-            logger.info("视频下载链接的数量-------->" + fileDownloadUrls.size());
-            return fileDownloadUrls;
+            logger.info("视频下载链接的数量-------->" + diskFiles.size());
+            return diskFiles;
         } catch (Exception e) {
-            logger.error("listFiles---------------------->" + e);
+            logger.error("diskFilelist---------------------->" + e);
             return null;
         }
     }
@@ -175,6 +168,39 @@ public class UserController extends BaseController {
     }
 
     /**
+     * 收藏文件
+     *
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/collectFile", produces = "text/json;charset=UTF-8")
+    @ResponseBody
+    public String collectFile(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            logger.info("collectFile------------------------>");
+            String accessToken = getAccessToken(request);
+            if (null == accessToken) {
+                return "对不起，请先登录你的天翼云盘！";
+            }
+            String fileId = request.getParameter("fileId");
+            String producerOpenId = request.getParameter("producerOpenId");
+            String collectorOpenId = (String) request.getSession().getAttribute("openId");//当前用户openId
+            UserCollect userCollect = new UserCollect();
+            userCollect.setFileId(fileId);
+            userCollect.setOpenIdProducer(producerOpenId);
+            userCollect.setOpenIdCollector(collectorOpenId);
+            int res = userCollectService.save(userCollect);
+            if (1 == res) {
+                return "success";
+            }
+        } catch (Exception e) {
+            logger.error("collectFile---------------------->" + e);
+        }
+        return "error";
+    }
+
+    /**
      * 投屏播放
      *
      * @param request
@@ -186,12 +212,17 @@ public class UserController extends BaseController {
         logger.info("play------------------------>");
 
         try {
+            String accessToken = getAccessToken(request);
+            if (null == accessToken) {
+                return "对不起，请先登录你的天翼云盘！";
+            }
             String openId = (String) request.getSession().getAttribute("openId");
             String deivceId = (String) request.getSession().getAttribute("deivceId");
             if (StringUtils.isEmpty(deivceId)) {
                 return "对不起，你的设备id为空，请求播放无效！";
             }
-            if (!"1".equals(request.getSession().getAttribute("bindStatus"))) {
+            String bindStatus = (String) request.getSession().getAttribute("bindStatus");
+            if (!"1".equals(bindStatus)) {
                 boolean bindFlag = bindDisk(openId, deivceId);
                 if (!bindFlag) {
                     return "对不起，您的天翼云账号未绑定该设备，请求播放无效！";
@@ -215,7 +246,7 @@ public class UserController extends BaseController {
                 return "error";
             }
         } catch (Exception e) {
-            logger.error("deleteFile---------------------->" + e);
+            logger.error("play---------------------->" + e);
             return "error";
         }
     }

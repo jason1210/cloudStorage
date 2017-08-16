@@ -8,5 +8,4 @@
         <property name="appSecret" value="${189.cn.appSecret}"/>
         <property name="redirectUri" value="${189.cn.redirectUri}"/>
     </bean>
-
 </beans>

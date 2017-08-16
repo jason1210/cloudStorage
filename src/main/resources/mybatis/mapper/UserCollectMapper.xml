@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yanhua.cloud.dao.UserCollectMapper">
+    <resultMap id="BaseResultMap" type="com.yanhua.cloud.model.UserCollect">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="open_id_collector" property="openIdCollector" jdbcType="VARCHAR"/>
+        <result column="open_id_producer" property="openIdProducer" jdbcType="VARCHAR"/>
+        <result column="file_id" property="fileId" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="flag" property="flag" jdbcType="BIT"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, open_id_collector, open_id_producer, file_id, create_time, update_time, flag
+  </sql>
+    <select id="selectByCollectOpenId" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from cloud_disk_user_collect
+        where open_id_collector = #{openIdCollector,jdbcType=VARCHAR}
+    </select>
+
+    <select id="count" resultType="java.lang.Integer" parameterType="com.yanhua.cloud.model.UserCollect">
+    SELECT
+	COUNT(id)
+    FROM
+        cloud_disk_user_collect
+    WHERE
+        open_id_collector = #{openIdCollector}
+    AND open_id_producer = #{openIdProducer}
+    AND file_id = #{fileId}
+  </select>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from cloud_disk_user_collect
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from cloud_disk_user_collect
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+    <insert id="insert" parameterType="com.yanhua.cloud.model.UserCollect">
+    insert into cloud_disk_user_collect (id, open_id_collector, open_id_producer, 
+      file_id, create_time, update_time, 
+      flag)
+    values (#{id,jdbcType=INTEGER}, #{openIdCollector,jdbcType=VARCHAR}, #{openIdProducer,jdbcType=VARCHAR}, 
+      #{fileId,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{flag,jdbcType=BIT})
+  </insert>
+    <insert id="insertSelective" parameterType="com.yanhua.cloud.model.UserCollect">
+        insert into cloud_disk_user_collect
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="openIdCollector != null">
+                open_id_collector,
+            </if>
+            <if test="openIdProducer != null">
+                open_id_producer,
+            </if>
+            <if test="fileId != null">
+                file_id,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="flag != null">
+                flag,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="openIdCollector != null">
+                #{openIdCollector,jdbcType=VARCHAR},
+            </if>
+            <if test="openIdProducer != null">
+                #{openIdProducer,jdbcType=VARCHAR},
+            </if>
+            <if test="fileId != null">
+                #{fileId,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="flag != null">
+                #{flag,jdbcType=BIT},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.yanhua.cloud.model.UserCollect">
+        update cloud_disk_user_collect
+        <set>
+            <if test="openIdCollector != null">
+                open_id_collector = #{openIdCollector,jdbcType=VARCHAR},
+            </if>
+            <if test="openIdProducer != null">
+                open_id_producer = #{openIdProducer,jdbcType=VARCHAR},
+            </if>
+            <if test="fileId != null">
+                file_id = #{fileId,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="flag != null">
+                flag = #{flag,jdbcType=BIT},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.yanhua.cloud.model.UserCollect">
+    update cloud_disk_user_collect
+    set open_id_collector = #{openIdCollector,jdbcType=VARCHAR},
+      open_id_producer = #{openIdProducer,jdbcType=VARCHAR},
+      file_id = #{fileId,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      flag = #{flag,jdbcType=BIT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -6,7 +6,7 @@
     <script src="jquery/jquery.js"></script>
     <script>
         $(document).ready(function () {
-            $.post("listFiles",
+            $.post("diskFilelist",
                     function (data) {
                         if ('' == data) {
                             alert("对不起，请您先登录你的云盘账户！")
@@ -25,6 +25,10 @@
         });
         function play() {
             var fileId = $("input[name='movie']:checked").val();
+            if(null==fileId){
+                alert("请先勾选一项！")
+                return;
+            }
             var fileName = $("label#" + fileId).text();
             var fileDownloadUrl = document.getElementById(fileId).title;
             var playUrl = "play?fileName=" + fileName + "&fileDownloadUrl=" + encodeURIComponent(fileDownloadUrl);
@@ -39,6 +43,10 @@
         }
         function doit() {
             var fileId = $("input[name='movie']:checked").val();
+            if(null==fileId){
+                alert("请先勾选一项！")
+                return;
+            }
             $.post("deleteFile?fileId=" + fileId,
                     function (data) {
                         if ("success" == data) {

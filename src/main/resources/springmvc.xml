@@ -37,6 +37,7 @@
     </bean>
 
     <import resource="beans.xml"/>
+    <import resource="spring-mybatis.xml"/>
 
     <mvc:resources location="/jquery/" mapping="/jquery/**"/>
     <mvc:resources location="/WEB-INF/statis/" mapping="*.html"/>

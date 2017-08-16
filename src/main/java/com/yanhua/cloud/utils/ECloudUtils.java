@@ -34,4 +34,9 @@ public class ECloudUtils {
     public void setRedirectUri(String redirectUri) {
         this.redirectUri = redirectUri;
     }
+
+    public static String getFileInfo(String appId, String accessToken, String fileId) {
+        String getFileInfoUrl = "http://api.189.cn/ChinaTelecom/getFileInfo.action?app_id=" + appId + "&access_token=" + accessToken + "&fileId=" + fileId;
+        return HttpRequestUtils.sendGet(getFileInfoUrl);
+    }
 }

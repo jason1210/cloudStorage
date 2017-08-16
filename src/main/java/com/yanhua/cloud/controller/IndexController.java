@@ -1,16 +1,20 @@
 package com.yanhua.cloud.controller;
 
-import com.yanhua.cloud.utils.ECloudUtils;
+import com.alibaba.fastjson.JSON;
+import com.yanhua.cloud.model.Producer;
+import com.yanhua.cloud.result.FileModel;
 import com.yanhua.cloud.utils.HttpRequestUtils;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by jasonzhu on 2017/08/08.
@@ -47,6 +51,28 @@ public class IndexController extends BaseController {
     @RequestMapping(value = "toIndex")
     public String toIndex(HttpServletRequest request) {
         return "index";
+    }
+
+    /**
+     * 获取首页的云盘文件列表
+     *
+     * @return
+     */
+    @RequestMapping(value = "indexFilelist", produces = "application/json;charset=UTF-8")
+    @ResponseBody
+    public List<FileModel> getAllFileInfoListByAccessToken() {
+        List<FileModel> fileModelList = new ArrayList<FileModel>();
+        List<Producer> producers = getAllProducers();
+        for (Producer p : producers) {
+            //通过遍历token获取所有的云盘用户视频列表
+            List<String> filelist = getFileInfoListByAccessToken(p.getAccessToken());
+            for (String s : filelist) {
+                FileModel model = JSON.parseObject(s, FileModel.class);
+                model.setOpenId(p.getOpenIdProducer());
+                fileModelList.add(model);
+            }
+        }
+        return fileModelList;
     }
 
 }
