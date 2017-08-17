@@ -31,7 +31,7 @@
             }
             var fileName = $("label#" + fileId).text();
             var fileDownloadUrl = document.getElementById(fileId).title;
-            var playUrl = "play?fileName=" + fileName + "&fileDownloadUrl=" + encodeURIComponent(fileDownloadUrl);
+            var playUrl = "play?loginStatus=0&fileName=" + fileName + "&fileDownloadUrl=" + encodeURIComponent(fileDownloadUrl);
             $.get(playUrl,
                     function (data) {
                         if ("success" == data) {

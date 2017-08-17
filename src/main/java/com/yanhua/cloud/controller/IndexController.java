@@ -1,6 +1,5 @@
 package com.yanhua.cloud.controller;
 
-import com.alibaba.fastjson.JSON;
 import com.yanhua.cloud.model.Producer;
 import com.yanhua.cloud.result.FileModel;
 import com.yanhua.cloud.utils.HttpRequestUtils;
@@ -65,12 +64,8 @@ public class IndexController extends BaseController {
         List<Producer> producers = getAllProducers();
         for (Producer p : producers) {
             //通过遍历token获取所有的云盘用户视频列表
-            List<String> filelist = getFileInfoListByAccessToken(p.getAccessToken());
-            for (String s : filelist) {
-                FileModel model = JSON.parseObject(s, FileModel.class);
-                model.setOpenId(p.getOpenIdProducer());
-                fileModelList.add(model);
-            }
+            List<FileModel> filelist = getFileInfoListByAccessToken(p.getAccessToken(), p.getOpenIdProducer());
+            fileModelList.addAll(filelist);
         }
         return fileModelList;
     }

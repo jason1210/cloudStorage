@@ -26,4 +26,9 @@ public interface UserCollectMapper {
      * @return
      */
     List<UserCollect> selectByCollectOpenId(String collectOpenId);
+
+    /**
+     * 通过文件id删除相关记录
+     */
+    int delete(UserCollect record);
 }

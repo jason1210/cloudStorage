@@ -13,6 +13,15 @@
     <sql id="Base_Column_List">
     id, open_id_collector, open_id_producer, file_id, create_time, update_time, flag
   </sql>
+    <delete id="delete" parameterType="com.yanhua.cloud.model.UserCollect">
+        DELETE
+        FROM
+            cloud_disk_user_collect
+        WHERE
+        file_id = #{fileId}
+        AND open_id_collector = #{openIdCollector}
+        AND open_id_producer = #{openIdProducer}
+    </delete>
     <select id="selectByCollectOpenId" resultMap="BaseResultMap" parameterType="java.lang.String">
         select
         <include refid="Base_Column_List"/>

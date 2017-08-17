@@ -15,8 +15,8 @@
                         var json = JSON.parse(data);
                         var str = "";
                         for (var i = 0; i < json.length; i++) {
-                            var obj = JSON.parse(json[i])
-                            str = str + "<label id=" + obj.id + " title=" + obj.fileDownloadUrl + "><input  type='radio' name='movie' value=" + obj.id + " />" + obj.name + "</label><br>";
+                            var obj = json[i]
+                            str = str + "<label id=" + obj.id + " title=" + obj.fileDownloadUrl + "><input  type='radio' name='movie' value=" + obj.id + " class=" + obj.openId + " />" + obj.name + "</label><br>";
                         }
                         document.getElementById("movies").innerHTML = str;
                         document.getElementById("movies").style.display = "block";
@@ -31,7 +31,7 @@
             }
             var fileName = $("label#" + fileId).text();
             var fileDownloadUrl = document.getElementById(fileId).title;
-            var playUrl = "play?fileName=" + fileName + "&fileDownloadUrl=" + encodeURIComponent(fileDownloadUrl);
+            var playUrl = "play?loginStatus=1&fileName=" + fileName + "&fileDownloadUrl=" + encodeURIComponent(fileDownloadUrl);
             $.get(playUrl,
                     function (data) {
                         if ("success" == data) {
@@ -47,7 +47,8 @@
                 alert("请先勾选一项！")
                 return;
             }
-            $.post("deleteFile?fileId=" + fileId,
+            var openId = $("input[name='movie']:checked").attr("class");
+            $.post("deleteFile?fileId=" + fileId + "&producerOpenId=" + openId,
                     function (data) {
                         if ("success" == data) {
                             alert("删除成功！")

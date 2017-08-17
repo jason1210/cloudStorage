@@ -3,6 +3,7 @@ package com.yanhua.cloud.controller;
 import com.alibaba.fastjson.JSON;
 import com.yanhua.cloud.model.AccessToken;
 import com.yanhua.cloud.model.UserCollect;
+import com.yanhua.cloud.result.FileModel;
 import com.yanhua.cloud.service.UserCollectService;
 import com.yanhua.cloud.utils.HttpRequestUtils;
 import org.apache.commons.lang.StringUtils;
@@ -111,7 +112,7 @@ public class UserController extends BaseController {
      */
     @RequestMapping(value = "/diskFilelist", produces = "application/json;charset=UTF-8")
     @ResponseBody
-    public List<String> listDiskFiles(HttpServletRequest request, HttpServletResponse response) {
+    public List<FileModel> listDiskFiles(HttpServletRequest request, HttpServletResponse response) {
         try {
             logger.info("diskFilelist------------------------>");
             String accessToken = getAccessToken(request);
@@ -119,11 +120,11 @@ public class UserController extends BaseController {
                 return null;
             }
             //获取该用户云盘上的文件列表
-            List<String> diskFiles = getFileInfoListByAccessToken(accessToken);
             String collectOpenId = (String) request.getSession().getAttribute("openId");
+            List<FileModel> diskFiles = getFileInfoListByAccessToken(accessToken, collectOpenId);
             String appId = eCloudUtils.getAppId();
             //获取该用户收藏的文件列表
-            List<String> collectFiles = userCollectService.getCollectFiles(appId, collectOpenId);
+            List<FileModel> collectFiles = userCollectService.getCollectFiles(appId, collectOpenId);
             if (null != collectFiles && collectFiles.size() > 0) {
                 diskFiles.addAll(collectFiles);
             }
@@ -147,24 +148,36 @@ public class UserController extends BaseController {
     public String deleteFile(HttpServletRequest request, HttpServletResponse response) {
         try {
             logger.info("deleteFile------------------------>");
-
             String fileId = request.getParameter("fileId");
             logger.info("文件ID------------------>" + fileId);
-            //通过文件id删除云盘中该文件
-            String appId = eCloudUtils.getAppId();
-            String accessToken = getAccessToken(request);
-            String getFileInfoUrl = "http://api.189.cn/ChinaTelecom/deleteFile.action?app_id=" + appId + "&access_token=" + accessToken + "&fileId=" + fileId;
-            String jsonRes = HttpRequestUtils.sendPost(getFileInfoUrl, null);
-            Map jsonMap = (Map) JSON.parse(jsonRes);
-            if ("0".equals(jsonMap.get("res_code")))
+            String producerOpenId = request.getParameter("producerOpenId");
+            String collectorOpenId = (String) request.getSession().getAttribute("openId");//当前用户openId
+            int res = 0;
+            if (producerOpenId.equals(collectorOpenId)) {
+                //通过文件id删除云盘中该文件
+                String appId = eCloudUtils.getAppId();
+                String accessToken = getAccessToken(request);
+                String getFileInfoUrl = "http://api.189.cn/ChinaTelecom/deleteFile.action?app_id=" + appId + "&access_token=" + accessToken + "&fileId=" + fileId;
+                String jsonRes = HttpRequestUtils.sendPost(getFileInfoUrl, null);
+                Map jsonMap = (Map) JSON.parse(jsonRes);
+                if ("0".equals(jsonMap.get("res_code").toString())) {
+                    res = 1;
+                }
+            } else {
+                //删除收藏该文件的记录
+                UserCollect collect = new UserCollect();
+                collect.setOpenIdCollector(collectorOpenId);
+                collect.setOpenIdProducer(producerOpenId);
+                collect.setFileId(fileId);
+                res = userCollectService.delete(collect);
+            }
+            if (1 == res) {
                 return "success";
-            else {
-                return "error";
             }
         } catch (Exception e) {
             logger.error("deleteFile---------------------->" + e);
-            return "error";
         }
+        return "error";
     }
 
     /**
@@ -212,24 +225,26 @@ public class UserController extends BaseController {
         logger.info("play------------------------>");
 
         try {
-            String accessToken = getAccessToken(request);
-            if (null == accessToken) {
-                return "对不起，请先登录你的天翼云盘！";
-            }
+            String loginStatus = request.getParameter("loginStatus");
             String openId = (String) request.getSession().getAttribute("openId");
             String deivceId = (String) request.getSession().getAttribute("deivceId");
             if (StringUtils.isEmpty(deivceId)) {
                 return "对不起，你的设备id为空，请求播放无效！";
             }
-            String bindStatus = (String) request.getSession().getAttribute("bindStatus");
-            if (!"1".equals(bindStatus)) {
-                boolean bindFlag = bindDisk(openId, deivceId);
-                if (!bindFlag) {
-                    return "对不起，您的天翼云账号未绑定该设备，请求播放无效！";
+            if ("1".equals(loginStatus)) {//1代表需要登录云盘授权后才可以投屏；0则不需要
+                String accessToken = getAccessToken(request);
+                if (null == accessToken) {
+                    return "对不起，请先登录你的天翼云盘！";
                 }
-                request.getSession().setAttribute("bindStatus", "1");
+                String bindStatus = (String) request.getSession().getAttribute("bindStatus");
+                if (!"1".equals(bindStatus)) {
+                    boolean bindFlag = bindDisk(openId, deivceId);
+                    if (!bindFlag) {
+                        return "对不起，您的天翼云账号未绑定该设备，请求播放无效！";
+                    }
+                    request.getSession().setAttribute("bindStatus", "1");
+                }
             }
-
 
             //进行投屏播放
             String fileDownloadUrl = request.getParameter("fileDownloadUrl");
