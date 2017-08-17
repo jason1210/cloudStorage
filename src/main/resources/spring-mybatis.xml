@@ -50,6 +50,7 @@
     <bean id="eCloudSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
         <property name="dataSource" ref="eCloudDataSource"/>
         <!-- mapper扫描 -->
+        <property name="configLocation" value="classpath:/mybatis/mybatis-config.xml"></property>
         <property name="mapperLocations" value="classpath:/mybatis/mapper/*Mapper.xml"></property>
     </bean>
 
