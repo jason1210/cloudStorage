@@ -25,7 +25,7 @@
         });
         function play() {
             var fileId = $("input[name='movie']:checked").val();
-            if(null==fileId){
+            if (null == fileId) {
                 alert("请先勾选一项！")
                 return;
             }
@@ -43,7 +43,7 @@
         }
         function doit() {
             var fileId = $("input[name='movie']:checked").val();
-            if(null==fileId){
+            if (null == fileId) {
                 alert("请先勾选一项！")
                 return;
             }
@@ -61,22 +61,15 @@
     </script>
 </head>
 <body style="background:url(img/welcome.jpg); text-align: center;height:665px; width:375px;">
-<div style="border: double; display: none;line-height:42px" id="movies">
+<div style=" display: none;line-height:42px" id="movies">
 </div>
 <div id="bottom" style="display: none;margin-top:120px">
-    <table>
-        <tr>
-            <td id="play">
-                <button type="button" onclick="play()"><h2>投屏</h2></button>
-            </td>
-            <td id="del">
-                <button type="button" onclick="doit()"><h2>删除</h2></button>
-            </td>
-            <td id="index">
-                <button type="button"><h2><a href="index.html   ">首页</a></h2></button>
-            </td>
-        </tr>
-    </table>
+
+    <button type="button" onclick="play()"><h2>投屏</h2></button>
+
+    <button type="button" onclick="doit()"><h2>删除</h2></button>
+
+    <button type="button"><h2><a href="index.html   ">首页</a></h2></button>
 
 
 </div>

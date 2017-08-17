@@ -25,7 +25,7 @@
 
         function play() {
             var fileId = $("input[name='movie']:checked").val();
-            if(null==fileId){
+            if (null == fileId) {
                 alert("请先勾选一项！")
                 return;
             }
@@ -44,7 +44,7 @@
 
         function collect() {
             var fileId = $("input[name='movie']:checked").val();
-            if(null==fileId){
+            if (null == fileId) {
                 alert("请先勾选一项！")
                 return;
             }
@@ -62,22 +62,18 @@
 
 </head>
 <body style="background:url(img/welcome.jpg); height:665px; width:375px;">
-<div id="list1">
+<div id="list1" style="text-align: center">
 
 
-    <div style=" line-height:42px" id="indexFilelist">
+    <div style=" line-height:42px ;font-size: 20px " id="indexFilelist">
     </div>
 
-    <div id="bottom" style="margin-top:80px">
-        <table>
-            <tr>
-                <td id="play">
-                    <button type="button" onclick="play()"><h4>投屏</h4></button>
-                </td>
-                <td id="collect">
-                    <button type="button" onclick="collect()"><h4>收藏</h4></button>
-            </tr>
-        </table>
+    <div id="bottom" style="margin-top:80px;margin-left: 20px">
+
+        <button type="button" onclick="play()"><h2>投屏</h2></button>
+
+        <button type="button" onclick="collect()"><h2>收藏</h2></button>
+
     </div>
 </div>
 <div id="myDiv" style="color: red;text-align: center; margin-left: 20px;margin-top:60px"><h2>授权登录天翼云盘</h2>
