@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50631
 File Encoding         : 65001
 
-Date: 2017-08-18 09:15:48
+Date: 2017-08-18 10:03:46
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -27,11 +27,11 @@ CREATE TABLE `cloud_disk_producer` (
   `access_token` varchar(255) DEFAULT NULL COMMENT '访问令牌，是调用平台能力接口的通行证',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `open_id_producer` (`open_id_producer`)
+  UNIQUE KEY `cloud_disk_producer_index` (`open_id_producer`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='天翼云盘视频提供者信息';
 
 -- ----------------------------
--- Records of cloud_disk_producer。
+-- Records of cloud_disk_producer
 -- ----------------------------
 INSERT INTO `cloud_disk_producer` VALUES ('1', '15168411120', '0okm9ijn', '9876011026603208542472941', '1f5c39fbcc9f83ce2f9e5424cc0d8d531502784137310', '2017-08-15 18:26:55');
 INSERT INTO `cloud_disk_producer` VALUES ('2', '15925621887', 'jason1210', '9876011026633604032992941', 'feced99f8b33be4bf668d7574164babc1502187075438', '2017-08-17 15:31:06');
@@ -48,7 +48,8 @@ CREATE TABLE `cloud_disk_user_collect` (
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
   `flag` tinyint(1) DEFAULT '1' COMMENT '1=收藏；0=未收藏',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `cloud_disk_user_collect_index` (`open_id_collector`,`open_id_producer`,`file_id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8 COMMENT='天翼云盘用户收藏表';
 
 -- ----------------------------
