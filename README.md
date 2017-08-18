@@ -1,4 +1,5 @@
 # cloudStorage
+基于《天翼云盘》
 --------------------项目运行及打包-------------------
 Run the application using          "mvn jetty:run"
 打本地开发包 "mvn package -P dev"
@@ -16,6 +17,6 @@ Linux： /home/username
 2  .git-credentials在文件中输入以下内容：
 https:{username}:{password}@github.com
 {username}和{password}是你的github的账号和密码
-3  修改git配置
+3  修改git配置。
 执行命令：
 git config --global credential.helper store
