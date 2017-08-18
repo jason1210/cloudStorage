@@ -24,7 +24,6 @@ public class IndexController extends BaseController {
     @RequestMapping(value = "/")
     public String index(HttpServletRequest request, HttpServletResponse response) {
         logger.info("index------------------------>");
-
         try {
             HttpSession session = request.getSession();
             String deivceId = (String) session.getAttribute("deivceId");
@@ -69,5 +68,4 @@ public class IndexController extends BaseController {
         }
         return fileModelList;
     }
-
 }

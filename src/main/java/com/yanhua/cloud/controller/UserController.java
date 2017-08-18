@@ -25,6 +25,7 @@ import java.util.Map;
  */
 @Controller
 public class UserController extends BaseController {
+
     @Autowired
     private UserCollectService userCollectService;
 
@@ -223,7 +224,6 @@ public class UserController extends BaseController {
     @ResponseBody
     public String play(HttpServletRequest request) {
         logger.info("play------------------------>");
-
         try {
             String loginStatus = request.getParameter("loginStatus");
             String openId = (String) request.getSession().getAttribute("openId");
@@ -245,7 +245,6 @@ public class UserController extends BaseController {
                     request.getSession().setAttribute("bindStatus", "1");
                 }
             }
-
             //进行投屏播放
             String fileDownloadUrl = request.getParameter("fileDownloadUrl");
             String fileName = request.getParameter("fileName");

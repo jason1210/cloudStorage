@@ -28,8 +28,6 @@ public class BaseController {
 
     /**
      * 获取所以的云盘提供者用户
-     *
-     * @return
      */
     protected List<Producer> getAllProducers() {
         return producerService.getAllProducers();
@@ -41,7 +39,7 @@ public class BaseController {
      * @param accessToken
      * @return
      */
-    protected List<FileModel> getFileInfoListByAccessToken(String accessToken,String openId) {
+    protected List<FileModel> getFileInfoListByAccessToken(String accessToken, String openId) {
         String appId = eCloudUtils.getAppId();
         String url = "http://api.189.cn/ChinaTelecom/listFiles.action?app_id=" + appId + "&access_token=" + accessToken + "&mediaAttr=0&mediaType=3&iconOption=0&pageNum=1&pageSize=17&fileType=0&orderBy=filename&descending=false";
         logger.info("listFiles获取我的云盘文件列表url：------->" + url);
