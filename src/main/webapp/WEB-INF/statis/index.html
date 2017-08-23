@@ -59,6 +59,7 @@
                     });
         }
         function collect2() {
+            var newTab=window.open();
             var fileId = $("input[name='movie']:checked").val();
             if (null == fileId) {
                 alert("请先勾选一项！")
@@ -69,7 +70,8 @@
                     function (data) {
                         if ("error" != data) {
 //                            window.location.href=data
-                            window.open(data)
+                            newTab.location.href=data
+//                            window.open(data)
                         } else {
                             alert("收藏失败！")
                         }
