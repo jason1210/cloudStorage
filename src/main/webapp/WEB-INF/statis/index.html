@@ -58,6 +58,23 @@
                         }
                     });
         }
+        function collect2() {
+            var fileId = $("input[name='movie']:checked").val();
+            if (null == fileId) {
+                alert("请先勾选一项！")
+                return;
+            }
+            var openId = $("input[name='movie']:checked").attr("class");
+            $.post("collectFile2?fileId=" + fileId + "&producerOpenId=" + openId,
+                    function (data) {
+                        if ("error" != data) {
+//                            window.location.href=data
+                            window.open(data)
+                        } else {
+                            alert("收藏失败！")
+                        }
+                    });
+        }
     </script>
 
 </head>
@@ -72,7 +89,8 @@
 
         <button type="button" onclick="play()" value="ssss">投屏</button>
 
-        <button type="button" onclick="collect()">收藏</button>
+        <!--<button type="button" onclick="collect()">收藏</button>-->
+        <button type="button" onclick="collect2()">收藏</button>
 
     </div>
 </div>

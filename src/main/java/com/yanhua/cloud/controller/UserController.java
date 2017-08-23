@@ -2,6 +2,7 @@ package com.yanhua.cloud.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.yanhua.cloud.model.AccessToken;
+import com.yanhua.cloud.model.Producer;
 import com.yanhua.cloud.model.UserCollect;
 import com.yanhua.cloud.result.FileModel;
 import com.yanhua.cloud.service.UserCollectService;
@@ -123,12 +124,12 @@ public class UserController extends BaseController {
             //获取该用户云盘上的文件列表
             String collectOpenId = (String) request.getSession().getAttribute("openId");
             List<FileModel> diskFiles = getFileInfoListByAccessToken(accessToken, collectOpenId);
-            String appId = eCloudUtils.getAppId();
-            //获取该用户收藏的文件列表
-            List<FileModel> collectFiles = userCollectService.getCollectFiles(appId, collectOpenId);
-            if (null != collectFiles && collectFiles.size() > 0) {
-                diskFiles.addAll(collectFiles);
-            }
+//            String appId = eCloudUtils.getAppId();
+//            //获取该用户收藏的文件列表
+//            List<FileModel> collectFiles = userCollectService.getCollectFiles(appId, collectOpenId);
+//            if (null != collectFiles && collectFiles.size() > 0) {
+//                diskFiles.addAll(collectFiles);
+//            }
             logger.info("视频下载链接的数量-------->" + diskFiles.size());
             return diskFiles;
         } catch (Exception e) {
@@ -208,6 +209,43 @@ public class UserController extends BaseController {
             if (1 == res) {
                 return "success";
             }
+        } catch (Exception e) {
+            logger.error("collectFile---------------------->" + e);
+        }
+        return "error";
+    }
+
+    /**
+     * 收藏文件
+     *
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/collectFile2", produces = "text/json;charset=UTF-8")
+    @ResponseBody
+    public String collectFile2(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            logger.info("collectFile2------------------------>");
+            String fileId = request.getParameter("fileId");
+            String producerOpenId = request.getParameter("producerOpenId");
+            String appId = eCloudUtils.getAppId();
+            Producer producer = producerService.selectByProducerOpenId(producerOpenId);
+            if (null != producer) {
+                //调用文件分享链接接口
+                String shareUrl = "http://api.189.cn/ChinaTelecom/createShareLink.action?app_id=" + appId + "&access_token=" + producer.getAccessToken() + "&fileId=" + fileId;
+                String jsonRes = HttpRequestUtils.sendGet(shareUrl);
+                logger.info("生成文件分享链接url------------------>" + shareUrl);
+                logger.info("生成文件分享链接返回结果信息------------------>" + jsonRes);
+                Map jsonMap = (Map) JSON.parse(jsonRes);
+                if ("0".equals(jsonMap.get("res_code").toString())) {
+                    List<Map<String, Object>> shareMapList = (List<Map<String, Object>>) jsonMap.get("shareLink");
+                    return (String) shareMapList.get(0).get("accessUrl");
+                } else {
+                    return "error";
+                }
+            }
+
         } catch (Exception e) {
             logger.error("collectFile---------------------->" + e);
         }

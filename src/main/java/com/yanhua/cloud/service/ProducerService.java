@@ -18,4 +18,8 @@ public class ProducerService {
     public List<Producer> getAllProducers() {
         return producerMapper.getAllProducers();
     }
+
+    public Producer selectByProducerOpenId(String producerOpenId){
+        return producerMapper.selectByProducerOpenId(producerOpenId);
+    }
 }
