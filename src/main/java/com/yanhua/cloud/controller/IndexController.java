@@ -3,17 +3,25 @@ package com.yanhua.cloud.controller;
 import com.yanhua.cloud.model.Producer;
 import com.yanhua.cloud.result.FileModel;
 import com.yanhua.cloud.utils.HttpRequestUtils;
+
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by jasonzhu on 2017/08/08.
@@ -53,8 +61,6 @@ public class IndexController extends BaseController {
 
     /**
      * 获取首页的云盘文件列表
-     *
-     * @return
      */
     @RequestMapping(value = "indexFilelist", produces = "application/json;charset=UTF-8")
     @ResponseBody
@@ -68,4 +74,30 @@ public class IndexController extends BaseController {
         }
         return fileModelList;
     }
+
+    @PostMapping(value = "upload")
+    @ResponseBody
+    public String upload(HttpServletRequest request, @RequestParam("file") MultipartFile file) {
+        try {
+            logger.info("开始上传");
+            if (!file.isEmpty()) {
+                String originalFileName = file.getOriginalFilename();
+                String fileType = originalFileName.substring(originalFileName.lastIndexOf("."));
+                //.csv文件上传
+                if (fileType.equalsIgnoreCase(".csv")) {
+                    String path = request.getSession().getServletContext().getRealPath("upload") + "\\";
+                    String fileName = System.currentTimeMillis() + fileType;
+                    String pathname = path + fileName;
+                    File localFile = new File(pathname);
+                    logger.info("upload file {} save to local {} ", fileName, localFile.getAbsoluteFile());
+                    FileUtils.writeByteArrayToFile(localFile, file.getBytes());
+                    return pathname;
+                }
+            }
+        } catch (IOException e) {
+
+        }
+        return null;
+    }
+
 }
