@@ -34,7 +34,6 @@ public class UploadController extends BaseController {
                 String originalFileName = file.getOriginalFilename();
                 String fileType = originalFileName.substring(originalFileName.lastIndexOf("."));
                 //.csv文件上传
-                if (fileType.equalsIgnoreCase(".csv")) {
                     String path = request.getSession().getServletContext().getRealPath("upload") + "\\";
                     String fileName = System.currentTimeMillis() + fileType;
                     String pathname = path + fileName;
@@ -42,7 +41,6 @@ public class UploadController extends BaseController {
                     logger.info("upload file {} save to local {} ", fileName, localFile.getAbsoluteFile());
                     FileUtils.writeByteArrayToFile(localFile, file.getBytes());
                     return pathname;
-                }
             }
         } catch (IOException e) {
 
