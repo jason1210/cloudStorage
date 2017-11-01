@@ -1,6 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <script src="/jquery/jquery-3.2.1.min.js" type="text/javascript"></script>
+
+    <script type="text/javascript">
+        function test(){
+            var form = new FormData(document.getElementById("uploadFile"));
+            $.ajax({
+                       url:"http://localhost:8281/upload",
+                       type:"post",
+                       data:form,
+                       processData:false,
+                       contentType:false
+                   });
+        }
+    </script>
 </head>
 
 <div>
@@ -8,9 +24,9 @@
         <p>
             Welcome to CloudStorage !
         </p>
-        <form action="upload" method="post" enctype="multipart/form-data">
+        <form id="uploadFile" name="uploadFile"action="" method="post" enctype="multipart/form-data">
             <input type="file" name="file"/>
-            <input type="submit" value="Upload"/>
+            <input type="button" value="Upload" onclick="test()" />
         </form>
         <a href="index.html"><h2>Let's go !</h2></a>
     </div>

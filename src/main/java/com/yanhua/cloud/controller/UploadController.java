@@ -1,8 +1,8 @@
 package com.yanhua.cloud.controller;
 
 import org.apache.commons.io.FileUtils;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -19,13 +19,12 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- *
  * @author Administrator
  * @version $Id: UploadController.java, v 0.1 2017-09-07 14:41 Administrator Exp $$
  */
 @Controller
 public class UploadController extends BaseController {
-    @PostMapping(value = "upload")
+    @RequestMapping(value = "upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseBody
     public String upload(HttpServletRequest request, @RequestParam("file") MultipartFile file) {
         try {
@@ -34,13 +33,14 @@ public class UploadController extends BaseController {
                 String originalFileName = file.getOriginalFilename();
                 String fileType = originalFileName.substring(originalFileName.lastIndexOf("."));
                 //.csv文件上传
-                    String path = request.getSession().getServletContext().getRealPath("upload") + "\\";
-                    String fileName = System.currentTimeMillis() + fileType;
-                    String pathname = path + fileName;
-                    File localFile = new File(pathname);
-                    logger.info("upload file {} save to local {} ", fileName, localFile.getAbsoluteFile());
-                    FileUtils.writeByteArrayToFile(localFile, file.getBytes());
-                    return pathname;
+                String path = request.getSession().getServletContext().getRealPath("upload") + "\\";
+                String fileName = System.currentTimeMillis() + fileType;
+                String pathname = path + fileName;
+                File localFile = new File(pathname);
+                logger.info("upload file {} save to local {} ", fileName, localFile.getAbsoluteFile());
+                FileUtils.writeByteArrayToFile(localFile, file.getBytes());
+                logger.info("结束上传");
+                return pathname;
             }
         } catch (IOException e) {
 
