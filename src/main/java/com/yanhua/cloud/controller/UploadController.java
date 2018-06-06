@@ -18,6 +18,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import static com.yanhua.cloud.utils.Constants.SEPARATOR_PATH;
+
 /**
  * @author Administrator
  * @version $Id: UploadController.java, v 0.1 2017-09-07 14:41 Administrator Exp $$
@@ -33,7 +35,7 @@ public class UploadController extends BaseController {
                 String originalFileName = file.getOriginalFilename();
                 String fileType = originalFileName.substring(originalFileName.lastIndexOf("."));
                 //.csv文件上传
-                String path = request.getSession().getServletContext().getRealPath("upload") + "\\";
+                String path = request.getSession().getServletContext().getRealPath("upload") + SEPARATOR_PATH;
                 String fileName = System.currentTimeMillis() + fileType;
                 String pathname = path + fileName;
                 File localFile = new File(pathname);

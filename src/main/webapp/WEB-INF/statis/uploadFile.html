@@ -9,7 +9,7 @@
         function test(){
             var form = new FormData(document.getElementById("uploadFile"));
             $.ajax({
-                       url:"http://localhost:8281/upload",
+                       url:"/upload",
                        type:"post",
                        data:form,
                        processData:false,
