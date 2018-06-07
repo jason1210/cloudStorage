@@ -13,22 +13,22 @@
         </commentGenerator>
 
         <jdbcConnection driverClass="com.mysql.jdbc.Driver"
-                        connectionURL="jdbc:mysql://183.131.15.25/cmes" userId="root"
-                        password="5zkgkdr2ol6"/>
+                        connectionURL="jdbc:mysql://127.0.0.1/test" userId="root"
+                        password="root"/>
         <!--生成Model类存放位置-->
         <javaModelGenerator targetPackage="com.yanhua.cloud.model"
-                            targetProject="E:\workspace\job\idea\cloudStorage\src\main\java">
+                            targetProject="E:\workspace\personal\cloudStorage\src\main\java">
             <property name="enableSubPackages" value="true"/>
             <property name="trimStrings" value="true"/>
         </javaModelGenerator>
         <!--生成映射文件存放位置-->
         <sqlMapGenerator targetPackage="mapper"
-                         targetProject="E:\workspace\job\idea\cloudStorage\src\main\resources\mybatis">
+                         targetProject="E:\workspace\personal\cloudStorage\src\main\resources\mybatis">
             <property name="enableSubPackages" value="true"/>
         </sqlMapGenerator>
         <!--生成Dao类存放位置-->
         <javaClientGenerator targetPackage="com.yanhua.cloud.dao"
-                             targetProject="E:\workspace\job\idea\cloudStorage\src\main\java" type="XMLMAPPER">
+                             targetProject="E:\workspace\personal\cloudStorage\src\main\java" type="XMLMAPPER">
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
 
@@ -37,7 +37,7 @@
                enableDeleteByExample="false" enableSelectByExample="false"
                selectByExampleQueryId="false"/>-->
 
-        <table tableName="cloud_disk_producer" domainObjectName="Producer"
+        <table tableName="upload_file" domainObjectName="UploadFile"
                enableCountByExample="false" enableUpdateByExample="false"
                enableDeleteByExample="false" enableSelectByExample="false"
                selectByExampleQueryId="false">

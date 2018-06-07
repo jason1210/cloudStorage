@@ -1,6 +1,12 @@
 package com.yanhua.cloud.controller;
 
+import com.yanhua.cloud.model.UploadFile;
+import com.yanhua.cloud.service.UploadFileService;
+
 import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,11 +20,13 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
 import static com.yanhua.cloud.utils.Constants.SEPARATOR_PATH;
+import static org.apache.commons.lang.StringUtils.isNotBlank;
 
 /**
  * @author Administrator
@@ -26,13 +34,19 @@ import static com.yanhua.cloud.utils.Constants.SEPARATOR_PATH;
  */
 @Controller
 public class UploadController extends BaseController {
+
+    private static final Logger logger = LoggerFactory.getLogger(UploadController.class);
+
+    @Autowired
+    private UploadFileService uploadFileService;
+
     @RequestMapping(value = "upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseBody
     public String upload(HttpServletRequest request, @RequestParam("file") MultipartFile file) {
-        try {
-            logger.info("开始上传");
-            if (!file.isEmpty()) {
-                String originalFileName = file.getOriginalFilename();
+        logger.info("开始上传");
+        if (!file.isEmpty()) {
+            String originalFileName = file.getOriginalFilename();
+            try {
                 String fileType = originalFileName.substring(originalFileName.lastIndexOf("."));
                 //.csv文件上传
                 String path = request.getSession().getServletContext().getRealPath("upload") + SEPARATOR_PATH;
@@ -41,13 +55,30 @@ public class UploadController extends BaseController {
                 File localFile = new File(pathname);
                 logger.info("upload file {} save to local {} ", fileName, localFile.getAbsoluteFile());
                 FileUtils.writeByteArrayToFile(localFile, file.getBytes());
+                UploadFile uploadFile = new UploadFile();
+                uploadFile.setFileName(originalFileName);
+                uploadFile.setFileType((byte) 0);
+                uploadFile.setFilePath(pathname);
+                uploadFile.setCreateTime(new Date());
+                uploadFileService.save(uploadFile);
                 logger.info("结束上传");
                 return pathname;
+            } catch (Exception e) {
+                logger.error("上传文件{}出现异常", originalFileName, e);
             }
-        } catch (IOException e) {
-
         }
-        return null;
+        return "error";
+    }
+
+    @RequestMapping(value = "get_upload_file")
+    @ResponseBody
+    public List<UploadFile> upload(HttpServletRequest request) {
+        Byte type = 0;
+        String typeStr = request.getParameter("type");
+        if (isNotBlank(typeStr)) {
+            type = Byte.parseByte(typeStr);
+        }
+        return uploadFileService.getByType(type);
     }
 
     @RequestMapping(value = "loadCsv")
