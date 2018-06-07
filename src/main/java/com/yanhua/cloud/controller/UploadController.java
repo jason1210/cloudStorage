@@ -37,6 +37,8 @@ public class UploadController extends BaseController {
 
     private static final Logger logger = LoggerFactory.getLogger(UploadController.class);
 
+    private static final String uploadDirPath = "/upload/";
+
     @Autowired
     private UploadFileService uploadFileService;
 
@@ -58,10 +60,13 @@ public class UploadController extends BaseController {
                 UploadFile uploadFile = new UploadFile();
                 uploadFile.setFileName(originalFileName);
                 uploadFile.setFileType((byte) 0);
-                uploadFile.setFilePath(pathname);
+                uploadFile.setFilePath(uploadDirPath + fileName);
                 uploadFile.setCreateTime(new Date());
-                uploadFileService.save(uploadFile);
-                logger.info("结束上传");
+                if (uploadFileService.save(uploadFile) > 0) {
+                    logger.info("写入数据库成功");
+                } else {
+                    logger.error("写入数据库失败");
+                }
                 return pathname;
             } catch (Exception e) {
                 logger.error("上传文件{}出现异常", originalFileName, e);

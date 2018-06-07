@@ -59,5 +59,6 @@
         <include refid="Base_Column_List"/>
         from upload_file
         where file_type = #{fileType,jdbcType=VARCHAR}
+        ORDER BY create_time DESC
     </select>
 </mapper>

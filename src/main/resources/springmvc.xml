@@ -50,5 +50,7 @@
     <import resource="spring-mybatis.xml"/>
 
     <mvc:resources location="/jquery/" mapping="/jquery/**"/>
+    <mvc:resources location="/img/" mapping="/img/**"/>
+    <mvc:resources location="/upload/" mapping="/upload/**"/>
     <mvc:resources location="/WEB-INF/statis/" mapping="*.html"/>
 </beans>
