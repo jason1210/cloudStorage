@@ -50,7 +50,7 @@ public class IndexController extends BaseController {
 
     @RequestMapping(value = "toIndex")
     public String toIndex(HttpServletRequest request) {
-        return "index";
+        return "index-welcome";
     }
 
     /**
