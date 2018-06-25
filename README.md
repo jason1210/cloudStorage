@@ -20,3 +20,7 @@ https:{username}:{password}@github.com
 3  修改git配置。
 执行命令：
 git config --global credential.helper store
+
+
+ ------------------maven编译的时候跳过test---------------
+mvn install -Dmaven.test.skip=true
